@@ -72,6 +72,14 @@
   gap: var(--space-3);
 }
 
+.dailies__hint {
+  margin: 0;
+  text-align: center;
+  color: var(--ink-50);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 .dailies__back {
   align-self: center;
   display: inline-flex;

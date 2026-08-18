@@ -42,9 +42,9 @@ Piste post-v1 (S9) : incrustation du visage de l'utilisateur sur le personnage (
 - [ ] Avertissement onglet masqué pendant la prise.
 - **Accepté si** : une prise se rejoue dans l'app sur Safari, sans téléchargement préalable.
 
-## S6 — Export MP4 + partage
-- [ ] ffmpeg.wasm local : WebM → MP4 (H.264/AAC), barre de progression.
-- [ ] Web Share API (partage natif iPhone), fallback téléchargement.
+## S6 — Partage
+- [x] ~~ffmpeg.wasm local : WebM → MP4~~ — devenu inutile : depuis S4 la capture sort **directement en MP4** (H.264/AAC) sur Safari et Chrome, WebM en secours ailleurs. Décision Stan du 18/08 : pas de conversion tant qu'un navigateur cible n'en a pas besoin.
+- [ ] Web Share API (partage natif iPhone), fallback téléchargement + message.
 - **Accepté si** : le MP4 sorti se lit dans Photos iOS et s'envoie en DM.
 
 ## S7 — Bibliothèque réelle

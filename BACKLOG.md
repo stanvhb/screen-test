@@ -3,7 +3,7 @@
 > Règles : ordre imposé · une tâche par session · branche `rebuild/S<n>` · fini = critère d'acceptation vérifié + `npm run check` vert. Stan coche ici après relecture navigateur et merge.
 
 ## S0 — Harnais (AVANT toute fonctionnalité)
-- [ ] Vérifier que Node.js (LTS) et git sont disponibles sur la machine ; installer proprement ce qui manque (nvm ou brew) en expliquant ce qui est fait.
+- [x] Vérifier que Node.js (LTS) et git sont disponibles sur la machine ; installer proprement ce qui manque (nvm ou brew) en expliquant ce qui est fait. *(Vérifié le 18/08 : Node v24.15.0 LTS, npm 11.12.1, git 2.50.1 déjà installés — rien à installer.)*
 - [ ] Scaffold Vite + React + TypeScript, ESLint + Prettier, Vitest (1 test exemple), Playwright (1 smoke : la page charge et affiche APP_NAME).
 - [ ] Script unique `npm run check` = lint + typecheck + tests + build.
 - [ ] Repo GitHub créé (`gh repo create`), `main` protégée (pas de push direct), CI GitHub Actions qui lance `npm run check` sur chaque branche.

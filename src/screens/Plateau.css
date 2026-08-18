@@ -1,0 +1,76 @@
+.plateau {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.plateau__camera {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, #1a1a1d 0%, var(--bg) 75%);
+}
+
+.plateau__camera p {
+  color: var(--ink-50);
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.plateau__top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+}
+
+.plateau__rec {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  color: var(--rec);
+}
+
+.plateau__rec-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--rec);
+}
+
+.plateau__timecode {
+  font-family: var(--font-mono);
+  color: var(--ink);
+}
+
+.plateau__bottom {
+  position: relative;
+  margin-top: auto;
+}
+
+.plateau__stop {
+  display: block;
+  margin: var(--space-4) auto calc(var(--space-5) + env(safe-area-inset-bottom));
+  width: 72px;
+  height: 72px;
+  border: 3px solid var(--ink);
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+
+.plateau__stop span {
+  display: block;
+  width: 28px;
+  height: 28px;
+  margin: 0 auto;
+  border-radius: 6px;
+  background: var(--rec);
+}

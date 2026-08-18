@@ -1,11 +1,21 @@
-import { APP_NAME } from './config'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Library } from './screens/Library'
+import { Setup } from './screens/Setup'
+import { Plateau } from './screens/Plateau'
+import { Dailies } from './screens/Dailies'
 
 function App() {
   return (
-    <main className="hello">
-      <h1>{APP_NAME}</h1>
-      <p>Moteur…</p>
-    </main>
+    <BrowserRouter>
+      <div className="frame">
+        <Routes>
+          <Route path="/" element={<Library />} />
+          <Route path="/setup/:id" element={<Setup />} />
+          <Route path="/plateau/:id" element={<Plateau />} />
+          <Route path="/dailies/:id" element={<Dailies />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   )
 }
 

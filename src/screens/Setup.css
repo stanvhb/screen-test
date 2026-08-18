@@ -1,0 +1,61 @@
+.setup {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5) var(--space-4);
+}
+
+.setup__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  text-decoration: none;
+  color: var(--ink-50);
+  font-weight: 600;
+}
+
+.setup__title {
+  font-size: 1.75rem;
+}
+
+.setup__film {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-50);
+}
+
+.setup__modes {
+  display: grid;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.setup__mode {
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+}
+
+.setup__mode--selected {
+  border-color: var(--rec);
+}
+
+.setup__mode h3 {
+  font-size: 1rem;
+}
+
+.setup__mode p {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-50);
+  font-size: 0.875rem;
+}
+
+.setup__hint {
+  margin-top: auto;
+  padding: var(--space-4) 0;
+  color: var(--ink-50);
+  font-size: 0.8125rem;
+  text-align: center;
+}

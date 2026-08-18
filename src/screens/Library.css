@@ -1,0 +1,22 @@
+.library {
+  padding: var(--space-5) var(--space-4);
+}
+
+.library__header {
+  margin-bottom: var(--space-5);
+}
+
+.library__header h1 {
+  font-size: 2rem;
+}
+
+.library__tagline {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-50);
+}
+
+.library__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}

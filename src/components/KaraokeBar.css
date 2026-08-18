@@ -1,0 +1,21 @@
+/* Lisible à 2 m de l'objectif (DESIGN-BRIEF) */
+.karaoke {
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.karaoke__active {
+  margin: 0;
+  color: var(--gaffer);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.karaoke__next {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-50);
+  font-size: 1rem;
+  line-height: 1.3;
+}

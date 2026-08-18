@@ -3,36 +3,36 @@
     "text": "Réplique 1 — Perso A parle.",
     "character": "a",
     "startMs": 0,
-    "endMs": 1800
+    "endMs": 1600
   },
   {
     "text": "Réplique 2 — Perso B parle.",
     "character": "b",
     "startMs": 2000,
-    "endMs": 3800
+    "endMs": 3600
   },
   {
     "text": "Réplique 3 — Perso A parle.",
     "character": "a",
     "startMs": 4000,
-    "endMs": 5800
+    "endMs": 5600
   },
   {
     "text": "Réplique 4 — Perso B parle.",
     "character": "b",
     "startMs": 6000,
-    "endMs": 7800
+    "endMs": 7600
   },
   {
     "text": "Réplique 5 — Perso A parle.",
     "character": "a",
     "startMs": 8000,
-    "endMs": 9800
+    "endMs": 9600
   },
   {
     "text": "Réplique 6 — Perso B parle.",
     "character": "b",
     "startMs": 10000,
-    "endMs": 11800
+    "endMs": 11600
   }
 ]

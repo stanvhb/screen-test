@@ -98,10 +98,47 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  max-height: 30dvh;
+  overflow-y: auto;
+}
+
+.timer__mark {
+  width: 100%;
+  min-height: var(--touch-min);
+  padding: var(--space-2) var(--space-3);
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.timer__mark--selected {
+  border-color: var(--rec);
+}
+
+.timer__mark--unassigned .timer__mark-char {
+  color: var(--rec);
 }
 
 .timer__mark-char {
   color: var(--gaffer);
+}
+
+.timer__file {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: 0.875rem;
+  color: var(--ink-50);
+}
+
+.timer__error {
+  margin: 0;
+  color: var(--rec);
+  font-size: 0.8125rem;
 }
 
 .timer__empty {

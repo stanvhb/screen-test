@@ -2,6 +2,10 @@
 
 > Règles : ordre imposé · une tâche par session · branche `rebuild/S<n>` · fini = critère d'acceptation vérifié + `npm run check` vert. Stan coche ici après relecture navigateur et merge.
 
+## La vision (précisée le 18/08 par Stan)
+Tu choisis **ton rôle** dans la scène. La vidéo finale est un **montage champ/contrechamp** : les plans où ton personnage est à l'image sont remplacés par ta prise (plein cadre), les plans de l'autre personnage restent ceux de la référence re-créée par nos comédiens. Exemple : tu joues l'invité du dîner → le résultat = la réf pour les plans de l'hôte, ta prise pour les plans de l'invité. Immersion : tu joues DANS la scène.
+Piste post-v1 (S9) : incrustation du visage de l'utilisateur sur le personnage (effet « fond vert »).
+
 ## S0 — Harnais (AVANT toute fonctionnalité)
 - [x] Vérifier que Node.js (LTS) et git sont disponibles sur la machine ; installer proprement ce qui manque (nvm ou brew) en expliquant ce qui est fait. *(Vérifié le 18/08 : Node v24.15.0 LTS, npm 11.12.1, git 2.50.1 déjà installés — rien à installer.)*
 - [ ] Scaffold Vite + React + TypeScript, ESLint + Prettier, Vitest (1 test exemple), Playwright (1 smoke : la page charge et affiche APP_NAME).
@@ -21,13 +25,13 @@
 - **Accepté si** : Stan s'enregistre 10 s et récupère le fichier — sur Safari macOS ET iPhone.
 
 ## S3 — Référence + karaoké
-- [ ] Format de scène : `public/scenes/<id>/` (video réf mp4, `cues.json` : texte + start/end ms, `meta.json` : titre, film parodié, crédits).
-- [ ] Lecture de la référence avec bande karaoké synchro (réplique active en surbrillance, la suivante en attente).
-- [ ] 1 scène de test placeholder (vidéo muette générée + cues bidon) committée.
-- **Accepté si** : la scène de test défile avec karaoké calé ; test unitaire sur le moteur de cues (réplique active à t donné).
+- [ ] Format de scène : `public/scenes/<id>/` (video réf mp4, `meta.json` : titre, film parodié, crédits + **personnages**, `cues.json` : texte + start/end ms + **personnage qui parle**, `shots.json` : start/end ms + **personnage à l'image** — pilote le montage champ/contrechamp).
+- [ ] Lecture de la référence avec bande karaoké synchro (réplique active en surbrillance — en jaune gaffer quand c'est TA réplique, en clair quand c'est l'autre) ; indicateur « à l'image » qui suit `shots.json`.
+- [ ] 1 scène de test placeholder (vidéo muette générée + cues/shots bidon) committée.
+- **Accepté si** : la scène de test défile avec karaoké calé et indicateur « à l'image » synchrone ; tests unitaires sur le moteur de cues ET de shots (état à t donné).
 
 ## S4 — Compositing + capture (la grosse session)
-- [ ] Canvas unique 9:16 : réf en haut, webcam miroir en bas, karaoké, filigrane APP_NAME + crédits du film parodié.
+- [ ] Canvas unique 9:16 **montage champ/contrechamp** : la réf plein cadre quand l'autre personnage est à l'image, ta webcam miroir plein cadre quand c'est ton personnage (commutation pilotée par `shots.json`), karaoké, filigrane APP_NAME + crédits du film parodié.
 - [ ] `canvas.captureStream()` + MediaRecorder (codec négocié explicitement, fallback H.264/Safari), audio mixé WebAudio : modes *Playback* (réf à 20 % pendant les répliques) et *Solo*.
 - [ ] Correction durée des blobs MediaRecorder (bug connu : durée infinie).
 - [ ] `tools/verify-export.sh` : ffprobe sur un export → durée, piste audio, dimensions, fps. Intégré à la doc de relecture.
@@ -38,9 +42,9 @@
 - [ ] Avertissement onglet masqué pendant la prise.
 - **Accepté si** : une prise se rejoue dans l'app sur Safari, sans téléchargement préalable.
 
-## S6 — Export MP4 + partage
-- [ ] ffmpeg.wasm local : WebM → MP4 (H.264/AAC), barre de progression.
-- [ ] Web Share API (partage natif iPhone), fallback téléchargement.
+## S6 — Partage
+- [x] ~~ffmpeg.wasm local : WebM → MP4~~ — devenu inutile : depuis S4 la capture sort **directement en MP4** (H.264/AAC) sur Safari et Chrome, WebM en secours ailleurs. Décision Stan du 18/08 : pas de conversion tant qu'un navigateur cible n'en a pas besoin.
+- [ ] Web Share API (partage natif iPhone), fallback téléchargement + message.
 - **Accepté si** : le MP4 sorti se lit dans Photos iOS et s'envoie en DM.
 
 ## S7 — Bibliothèque réelle
@@ -48,10 +52,34 @@
 - [ ] Petit outil `/timer` : caler les cues à la barre espace en regardant la réf, export cues.json (pour préparer les vraies scènes).
 - **Accepté si** : Stan ajoute une fausse scène en suivant un README de 10 lignes, sans toucher au code.
 
+## S7b — Karaoké v2 : prompteur (demande Stan du 18/08)
+- [ ] Le karaoké SORT de l'export : la vidéo finale = montage + filigrane + carton de fin, rien d'autre. Le karaoké redevient une surcouche d'écran pendant la prise (prompteur pour l'acteur).
+- [ ] Karaoké mot à mot : le surlignage balaye la réplique mot par mot (v1 : répartition linéaire sur la durée de la réplique ; timings réels par mot quand S7c les fournira).
+- **Accepté si** : une frame extraite de l'export ne contient AUCUN texte de karaoké ; à l'écran le balayage suit le rythme de la réplique.
+
+## S7c — Analyse automatique des scènes (préparation locale, hors app)
+- [ ] `tools/analyze-scene` : transcription locale (Whisper) → brouillon `cues.json` avec texte réel + horodatage par mot ; détection de coupes ffmpeg → brouillon `shots.json`. Rien ne quitte le Mac.
+- [ ] `/timer` réviseur : importer ces brouillons, attribuer A/B (un geste par réplique/plan), ajuster les bornes, ré-exporter.
+- **Accepté si** : préparer la scène témoin via l'analyse auto prend moins de 5 minutes, fichiers valides à l'arrivée.
+
+## S7d — Attribution automatique (demande Stan du 18/08)
+- [ ] Séparation des voix en local : hauteur de voix par réplique → regroupement en 2 voix → attribution a/b automatique (si les voix sont trop proches : alternance + avertissement). Un seul geste humain restant : vérifier/permuter A↔B.
+- [ ] Préremplissage des plans : « le plan montre celui qui parle » (les plans de réaction se corrigent dans /timer).
+- [ ] Intégration en une commande : `--scene=<id>` crée le dossier complet (vidéo, meta, cues, shots) et ajoute la ligne au manifest — la scène est jouable immédiatement.
+- [ ] `/timer` : bouton « Permuter A↔B » (si l'attribution auto a inversé les rôles).
+- [ ] Scènes cultes : l'attribution par le texte (qui dit quelle réplique célèbre) se fait avec Claude pendant la préparation — documenté dans le README scènes.
+- **Accepté si** : `npm run analyze -- video --scene=x` produit une scène jouable sans toucher au code, voix correctement séparées sur la scène témoin.
+
+## S10 — Piste post-v1 : scènes perso des utilisateurs
+- [ ] À décider (produit + droits) : permettre de charger SA propre vidéo de référence, 100 % dans le navigateur (rien d'envoyé), calage manuel via /timer. Hors périmètre v1.
+
 ## S8 — Polish + mise en ligne
 - [ ] États vides/erreurs, textes FR définitifs, favicon/OG image, page « c'est quoi » avec mention parodique + contact retrait sur demande.
 - [ ] Déploiement Vercel (statique), test Lighthouse mobile.
 - **Accepté si** : URL publique fonctionnelle sur l'iPhone de Stan.
+
+## S9 — Exploration post-v1 (ne pas commencer sans décision de Stan)
+- [ ] Incrustation du visage de l'utilisateur sur le personnage joué (effet « fond vert » / face overlay). À évaluer : segmentation visage temps réel côté client (type MediaPipe), coût perf mobile, rendu acceptable. Hors périmètre v1.
 
 ---
 

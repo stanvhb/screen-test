@@ -1,0 +1,52 @@
+[
+  {
+    "character": "a",
+    "startMs": 0,
+    "endMs": 2500
+  },
+  {
+    "character": "b",
+    "startMs": 2500,
+    "endMs": 3600
+  },
+  {
+    "character": "a",
+    "startMs": 3600,
+    "endMs": 5000
+  },
+  {
+    "character": "a",
+    "startMs": 5000,
+    "endMs": 7500
+  },
+  {
+    "character": "b",
+    "startMs": 7500,
+    "endMs": 10000
+  },
+  {
+    "character": "b",
+    "startMs": 10000,
+    "endMs": 11300
+  },
+  {
+    "character": "a",
+    "startMs": 11300,
+    "endMs": 12500
+  },
+  {
+    "character": "b",
+    "startMs": 12500,
+    "endMs": 15000
+  },
+  {
+    "character": "a",
+    "startMs": 15000,
+    "endMs": 17500
+  },
+  {
+    "character": "b",
+    "startMs": 17500,
+    "endMs": 20000
+  }
+]

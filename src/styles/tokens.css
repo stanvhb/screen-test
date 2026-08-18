@@ -1,0 +1,27 @@
+/* Tokens DA « PLATEAU » — source : DESIGN-BRIEF.md */
+:root {
+  /* Couleurs */
+  --bg: #0a0a0b; /* noir plateau */
+  --surface: #161618;
+  --ink: #f4f1ea; /* blanc cassé */
+  --ink-50: rgba(244, 241, 234, 0.5);
+  --rec: #ff3b30; /* accent unique */
+  --gaffer: #ffc833; /* réservé karaoké */
+
+  /* Typo */
+  --font-display: 'Archivo Black', 'Archivo', system-ui, sans-serif;
+  --font-ui: 'Archivo', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Espacements */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+
+  /* Formes */
+  --radius-card: 12px;
+  --touch-min: 48px;
+}

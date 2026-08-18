@@ -1,0 +1,42 @@
+.library {
+  padding: var(--space-5) var(--space-4);
+}
+
+.library__header {
+  margin-bottom: var(--space-5);
+}
+
+.library__header h1 {
+  font-size: 2rem;
+}
+
+.library__tagline {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-50);
+}
+
+.library__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.library__empty {
+  margin: var(--space-6) 0;
+  text-align: center;
+  color: var(--ink-50);
+}
+
+.library__footer {
+  margin-top: var(--space-6);
+  padding-bottom: var(--space-5);
+  text-align: center;
+}
+
+.library__footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--ink-50);
+  font-size: 0.875rem;
+}

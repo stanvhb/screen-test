@@ -1,0 +1,16 @@
+{
+  "title": "La contre-mire",
+  "film": "Mire de test n° 2 (générée)",
+  "credits": "Générée par tools/make-demo-scene.mjs",
+  "durationS": 12,
+  "characters": [
+    {
+      "id": "a",
+      "name": "Perso A"
+    },
+    {
+      "id": "b",
+      "name": "Perso B"
+    }
+  ]
+}

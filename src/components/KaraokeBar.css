@@ -1,0 +1,44 @@
+/* Prompteur — lisible à 2 m de l'objectif (DESIGN-BRIEF) */
+.karaoke {
+  background: rgba(0, 0, 0, 0.7);
+  padding: var(--space-4);
+  text-align: center;
+}
+
+.karaoke__speaker {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--ink-50);
+}
+
+.karaoke__active {
+  margin: 0;
+  color: var(--ink-50);
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* Mot pas encore dit : éteint ; mot atteint : allumé */
+.karaoke__word {
+  color: var(--ink-50);
+  transition: color 120ms linear;
+}
+
+.karaoke__word--lit {
+  color: var(--ink);
+}
+
+.karaoke__active--you .karaoke__word--lit {
+  color: var(--gaffer);
+}
+
+.karaoke__next {
+  margin: var(--space-2) 0 0;
+  color: var(--ink-50);
+  font-size: 1rem;
+  line-height: 1.3;
+}

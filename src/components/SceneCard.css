@@ -1,0 +1,45 @@
+.scene-card {
+  display: block;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  text-decoration: none;
+  min-height: var(--touch-min);
+}
+
+.scene-card__thumb {
+  aspect-ratio: 9 / 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #1d1d20 0%, #101012 100%);
+}
+
+.scene-card__thumb span {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--ink-50);
+}
+
+.scene-card__body {
+  padding: var(--space-3);
+}
+
+.scene-card__title {
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+
+.scene-card__film {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink-50);
+}
+
+.scene-card__duration {
+  margin: var(--space-2) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink-50);
+}

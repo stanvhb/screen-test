@@ -1,0 +1,50 @@
+[
+  {
+    "text": "Réplique 1 — Perso A parle.",
+    "character": "a",
+    "startMs": 0,
+    "endMs": 2300
+  },
+  {
+    "text": "Réplique 2 — Perso B parle.",
+    "character": "b",
+    "startMs": 2500,
+    "endMs": 4800
+  },
+  {
+    "text": "Réplique 3 — Perso A parle.",
+    "character": "a",
+    "startMs": 5000,
+    "endMs": 7300
+  },
+  {
+    "text": "Réplique 4 — Perso B parle.",
+    "character": "b",
+    "startMs": 7500,
+    "endMs": 9800
+  },
+  {
+    "text": "Réplique 5 — Perso A parle.",
+    "character": "a",
+    "startMs": 10000,
+    "endMs": 12300
+  },
+  {
+    "text": "Réplique 6 — Perso B parle.",
+    "character": "b",
+    "startMs": 12500,
+    "endMs": 14800
+  },
+  {
+    "text": "Réplique 7 — Perso A parle.",
+    "character": "a",
+    "startMs": 15000,
+    "endMs": 17300
+  },
+  {
+    "text": "Réplique 8 — Perso B parle.",
+    "character": "b",
+    "startMs": 17500,
+    "endMs": 19800
+  }
+]

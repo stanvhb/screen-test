@@ -1,0 +1,15 @@
+{
+  "title": "La scène témoin",
+  "film": "Mire de test (générée)",
+  "credits": "Générée par tools/make-demo-scene.mjs",
+  "characters": [
+    {
+      "id": "a",
+      "name": "Perso A"
+    },
+    {
+      "id": "b",
+      "name": "Perso B"
+    }
+  ]
+}

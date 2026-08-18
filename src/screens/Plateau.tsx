@@ -16,6 +16,7 @@ import {
   type FramePhase,
 } from '../lib/compositor'
 import { pickRecordingFormat } from '../lib/recorder'
+import { litWordCount } from '../lib/karaoke'
 import { cueAfter, cueAt, shotAt, type Cue, type Shot } from '../lib/sceneEngine'
 import { formatTimecode } from '../lib/timecode'
 import './Plateau.css'
@@ -26,7 +27,7 @@ const COUNTDOWN_STEPS = ['3', '2', '1', 'ACTION'] as const
 const COUNTDOWN_STEP_MS = 800
 const END_CARD_MS = 1800
 
-type SyncView = { active: Cue | null; next: Cue | null; shot: Shot | null }
+type SyncView = { active: Cue | null; next: Cue | null; shot: Shot | null; litCount: number }
 
 export function Plateau() {
   const { id } = useParams()
@@ -67,11 +68,8 @@ export function Plateau() {
 
   const compositorScene: CompositorScene | null = media
     ? {
-        cues: media.cues,
         shots: media.shots,
         youId: you.id,
-        speakerName: (characterId) =>
-          media.characters.find((c) => c.id === characterId)?.name ?? '',
         filmCredit: `d’après ${media.film}`,
       }
     : null
@@ -208,11 +206,16 @@ export function Plateau() {
       const active = cueAt(media.cues, tMs)
       const next = cueAfter(media.cues, tMs)
       const shot = shotAt(media.shots, tMs)
+      const litCount = active ? litWordCount(active.text, tMs, active.startMs, active.endMs) : 0
       audioMixRef.current?.setLevels(mode, active?.character === you.id)
       setSyncView((prev) =>
-        prev && prev.active === active && prev.next === next && prev.shot === shot
+        prev &&
+        prev.active === active &&
+        prev.next === next &&
+        prev.shot === shot &&
+        prev.litCount === litCount
           ? prev
-          : { active, next, shot },
+          : { active, next, shot, litCount },
       )
       raf = requestAnimationFrame(tick)
     }
@@ -376,11 +379,12 @@ export function Plateau() {
       )}
 
       <footer className="plateau__bottom">
-        {/* Le karaoké visible est dessiné sur le canvas ; cette copie DOM reste
-            pour les lecteurs d'écran et les tests (masquée visuellement). */}
-        <div className={media ? 'plateau__karaoke-sr' : undefined}>
-          <KaraokeBar active={activeLine} next={nextLine} />
-        </div>
+        {/* Prompteur : visible pendant la prise, jamais dessiné dans l'export */}
+        <KaraokeBar
+          active={activeLine}
+          next={nextLine}
+          litCount={media ? (phase === 'recording' ? (syncView?.litCount ?? 0) : 0) : undefined}
+        />
         {recordError && (
           <p className="plateau__record-error">Ta vidéo n’a pas pu démarrer. Réessaie.</p>
         )}

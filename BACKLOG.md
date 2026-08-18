@@ -52,6 +52,16 @@ Piste post-v1 (S9) : incrustation du visage de l'utilisateur sur le personnage (
 - [ ] Petit outil `/timer` : caler les cues à la barre espace en regardant la réf, export cues.json (pour préparer les vraies scènes).
 - **Accepté si** : Stan ajoute une fausse scène en suivant un README de 10 lignes, sans toucher au code.
 
+## S7b — Karaoké v2 : prompteur (demande Stan du 18/08)
+- [ ] Le karaoké SORT de l'export : la vidéo finale = montage + filigrane + carton de fin, rien d'autre. Le karaoké redevient une surcouche d'écran pendant la prise (prompteur pour l'acteur).
+- [ ] Karaoké mot à mot : le surlignage balaye la réplique mot par mot (v1 : répartition linéaire sur la durée de la réplique ; timings réels par mot quand S7c les fournira).
+- **Accepté si** : une frame extraite de l'export ne contient AUCUN texte de karaoké ; à l'écran le balayage suit le rythme de la réplique.
+
+## S7c — Analyse automatique des scènes (préparation locale, hors app)
+- [ ] `tools/analyze-scene` : transcription locale (Whisper) → brouillon `cues.json` avec texte réel + horodatage par mot ; détection de coupes ffmpeg → brouillon `shots.json`. Rien ne quitte le Mac.
+- [ ] `/timer` réviseur : importer ces brouillons, attribuer A/B (un geste par réplique/plan), ajuster les bornes, ré-exporter.
+- **Accepté si** : préparer la scène témoin via l'analyse auto prend moins de 5 minutes, fichiers valides à l'arrivée.
+
 ## S8 — Polish + mise en ligne
 - [ ] États vides/erreurs, textes FR définitifs, favicon/OG image, page « c'est quoi » avec mention parodique + contact retrait sur demande.
 - [ ] Déploiement Vercel (statique), test Lighthouse mobile.

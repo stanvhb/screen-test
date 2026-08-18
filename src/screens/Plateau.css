@@ -41,16 +41,6 @@
   pointer-events: none;
 }
 
-/* Copie DOM du karaoké pour lecteurs d'écran et tests (le visible est sur le canvas) */
-.plateau__karaoke-sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .plateau__waiting {
   position: relative;
   color: var(--ink-50);

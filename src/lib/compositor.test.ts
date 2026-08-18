@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { computeCoverRect, wrapText } from './compositor'
+import { computeCoverRect } from './compositor'
 
 describe('computeCoverRect', () => {
   it('rogne les côtés d’une source paysage pour un cadre portrait', () => {
@@ -18,25 +18,5 @@ describe('computeCoverRect', () => {
   it('reste sain avec une source vide (vidéo pas prête)', () => {
     const r = computeCoverRect(0, 0, 720, 1280)
     expect(r.sw).toBe(0)
-  })
-})
-
-describe('wrapText', () => {
-  const measure = (text: string) => text.length * 10
-
-  it('coupe aux mots pour tenir dans la largeur', () => {
-    expect(wrapText(measure, 'un deux trois quatre', 100)).toEqual(['un deux', 'trois', 'quatre'])
-  })
-
-  it('garde une seule ligne quand ça tient', () => {
-    expect(wrapText(measure, 'court', 100)).toEqual(['court'])
-  })
-
-  it('ne perd jamais un mot trop long', () => {
-    expect(wrapText(measure, 'mot interminablement-long fin', 100)).toEqual([
-      'mot',
-      'interminablement-long',
-      'fin',
-    ])
   })
 })

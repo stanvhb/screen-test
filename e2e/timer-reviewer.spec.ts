@@ -30,4 +30,16 @@ test('/timer réviseur : importer un brouillon, attribuer A/B, exporter', async 
   ) as { text: string; character: string }[]
   expect(content[0]).toMatchObject({ character: 'a', text: 'Salut.' })
   expect(content[1].character).toBe('b')
+
+  // L'attribution auto peut être inversée : Permuter A ↔ B corrige en un clic
+  await page.getByRole('button', { name: /Permuter A ↔ B/ }).click()
+  const downloadPromise2 = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Exporter cues.json' }).click()
+  const swapped = JSON.parse(
+    await (
+      await import('node:fs/promises')
+    ).readFile(await (await downloadPromise2).path(), 'utf8'),
+  ) as { character: string }[]
+  expect(swapped[0].character).toBe('b')
+  expect(swapped[1].character).toBe('a')
 })

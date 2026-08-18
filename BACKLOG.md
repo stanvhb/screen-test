@@ -62,6 +62,17 @@ Piste post-v1 (S9) : incrustation du visage de l'utilisateur sur le personnage (
 - [ ] `/timer` réviseur : importer ces brouillons, attribuer A/B (un geste par réplique/plan), ajuster les bornes, ré-exporter.
 - **Accepté si** : préparer la scène témoin via l'analyse auto prend moins de 5 minutes, fichiers valides à l'arrivée.
 
+## S7d — Attribution automatique (demande Stan du 18/08)
+- [ ] Séparation des voix en local : hauteur de voix par réplique → regroupement en 2 voix → attribution a/b automatique (si les voix sont trop proches : alternance + avertissement). Un seul geste humain restant : vérifier/permuter A↔B.
+- [ ] Préremplissage des plans : « le plan montre celui qui parle » (les plans de réaction se corrigent dans /timer).
+- [ ] Intégration en une commande : `--scene=<id>` crée le dossier complet (vidéo, meta, cues, shots) et ajoute la ligne au manifest — la scène est jouable immédiatement.
+- [ ] `/timer` : bouton « Permuter A↔B » (si l'attribution auto a inversé les rôles).
+- [ ] Scènes cultes : l'attribution par le texte (qui dit quelle réplique célèbre) se fait avec Claude pendant la préparation — documenté dans le README scènes.
+- **Accepté si** : `npm run analyze -- video --scene=x` produit une scène jouable sans toucher au code, voix correctement séparées sur la scène témoin.
+
+## S10 — Piste post-v1 : scènes perso des utilisateurs
+- [ ] À décider (produit + droits) : permettre de charger SA propre vidéo de référence, 100 % dans le navigateur (rien d'envoyé), calage manuel via /timer. Hors périmètre v1.
+
 ## S8 — Polish + mise en ligne
 - [ ] États vides/erreurs, textes FR définitifs, favicon/OG image, page « c'est quoi » avec mention parodique + contact retrait sur demande.
 - [ ] Déploiement Vercel (statique), test Lighthouse mobile.

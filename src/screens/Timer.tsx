@@ -239,6 +239,29 @@ export function Timer() {
       <div className="timer__actions">
         <Button
           variant="ghost"
+          onClick={() =>
+            setMarks((prev) =>
+              prev.map((mark) =>
+                mark.track === track
+                  ? {
+                      ...mark,
+                      character:
+                        mark.character === 'a'
+                          ? 'b'
+                          : mark.character === 'b'
+                            ? 'a'
+                            : mark.character,
+                    }
+                  : mark,
+              ),
+            )
+          }
+          disabled={trackMarks.length === 0}
+        >
+          Permuter A ↔ B ({track === 'cues' ? 'répliques' : 'plans'})
+        </Button>
+        <Button
+          variant="ghost"
           onClick={() => {
             setMarks((prev) => prev.slice(0, -1))
             setSelected(null)

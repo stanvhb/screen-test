@@ -1,5 +1,6 @@
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getScene } from '../data/scenes'
+import { getTake } from '../data/takes'
 import { Button } from '../components/Button'
 import './Dailies.css'
 
@@ -7,6 +8,17 @@ export function Dailies() {
   const { id } = useParams()
   const scene = getScene(id)
   const navigate = useNavigate()
+  const take = getTake(scene.id)
+
+  const downloadTake = () => {
+    if (!take) return
+    const url = URL.createObjectURL(take.blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `prise-${scene.id}.${take.extension}`
+    link.click()
+    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
 
   return (
     <div className="dailies">
@@ -23,7 +35,11 @@ export function Dailies() {
       </header>
 
       <footer className="dailies__actions">
-        <Button onClick={() => alert('Bientôt : ta vidéo filigranée.')}>Exporter</Button>
+        {take ? (
+          <Button onClick={downloadTake}>Télécharger ta prise</Button>
+        ) : (
+          <Button disabled>Pas encore de prise</Button>
+        )}
         <div className="dailies__secondary">
           <Button variant="ghost" onClick={() => navigate(`/plateau/${scene.id}`)}>
             Une autre ?

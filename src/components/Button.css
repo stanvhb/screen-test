@@ -19,6 +19,11 @@
   transform: scale(0.98);
 }
 
+.btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
 .btn--primary {
   background: var(--rec);
   color: var(--ink);

@@ -1,5 +1,5 @@
 // Négociation explicite du format d'enregistrement (CLAUDE.md : pas de VP9 supposé).
-// MP4 d'abord (demande de Stan, 18/08 : lisible partout, Photos iOS compris),
+// MP4 d'abord (décision du 18/08 : lisible partout, Photos iOS compris),
 // WebM/VP8 en secours pour les navigateurs qui ne savent pas produire de MP4.
 export type RecordingFormat = { mimeType: string; extension: 'webm' | 'mp4' }
 

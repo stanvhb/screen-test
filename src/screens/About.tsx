@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { APP_NAME, CONTACT_EMAIL } from '../config'
+import { APP_NAME } from '../config'
 import './About.css'
 
 export function About() {
@@ -23,8 +23,8 @@ export function About() {
         passe dans ton navigateur. Tu télécharges ta prise ou elle disparaît, c’est tout.
       </p>
       <p className="about__contact">
-        Ayant droit ? Une re-création vous pose problème : écrivez-nous, on la retire —{' '}
-        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        Ayant droit ? Si une re-création vous pose problème, elle sera retirée sur simple demande.
+        Un moyen de contact sera indiqué ici prochainement.
       </p>
       <p className="about__signature">Une production Le Studio.</p>
     </div>

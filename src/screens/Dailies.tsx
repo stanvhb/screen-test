@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { getScene } from '../data/scenes'
-import { getTake } from '../data/takes'
+import { getTake, getTakeUrl } from '../data/takes'
 import { Button } from '../components/Button'
 import './Dailies.css'
 
@@ -11,29 +10,15 @@ export function Dailies() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const take = getTake(scene.id)
-
   // La prise se rejoue depuis la mémoire — rien n'est envoyé nulle part.
-  // URL créée/révoquée dans l'effet (survit au double-montage StrictMode).
-  const [videoUrl, setVideoUrl] = useState<string | null>(null)
-  useEffect(() => {
-    if (!take) return
-    const url = URL.createObjectURL(take.blob)
-    setVideoUrl(url)
-    return () => {
-      setVideoUrl(null)
-      URL.revokeObjectURL(url)
-    }
-  }, [take])
+  const videoUrl = getTakeUrl(scene.id)
 
   const downloadTake = () => {
-    if (!take) return
-    // URL dédiée au téléchargement : révoquée après coup, sans toucher au lecteur
-    const url = URL.createObjectURL(take.blob)
+    if (!take || !videoUrl) return
     const link = document.createElement('a')
-    link.href = url
+    link.href = videoUrl
     link.download = `prise-${scene.id}.${take.extension}`
     link.click()
-    setTimeout(() => URL.revokeObjectURL(url), 10_000)
   }
 
   const anotherTake = () => {

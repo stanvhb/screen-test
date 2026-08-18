@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { APP_NAME } from '../config'
 import { useLibrary } from '../hooks/useLibrary'
 import { SceneCard } from '../components/SceneCard'
@@ -17,6 +18,14 @@ export function Library() {
           <SceneCard key={scene.id} scene={scene} index={index} />
         ))}
       </div>
+      {library.status === 'ready' && library.scenes.length === 0 && (
+        <p className="library__empty">
+          Aucune scène pour l’instant — elles arrivent. Reviens vite !
+        </p>
+      )}
+      <footer className="library__footer">
+        <Link to="/a-propos">C’est quoi, {APP_NAME} ?</Link>
+      </footer>
     </div>
   )
 }

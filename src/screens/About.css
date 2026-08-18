@@ -1,0 +1,42 @@
+.about {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-4);
+}
+
+.about__back {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  text-decoration: none;
+  color: var(--ink-50);
+  font-weight: 600;
+}
+
+.about h2 {
+  font-size: 1.5rem;
+}
+
+.about p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.about__contact {
+  color: var(--ink-50);
+  font-size: 0.9375rem;
+}
+
+.about__contact a {
+  color: var(--ink);
+}
+
+.about__signature {
+  margin-top: auto;
+  padding-top: var(--space-5);
+  color: var(--ink-50);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}

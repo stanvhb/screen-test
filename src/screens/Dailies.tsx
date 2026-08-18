@@ -1,6 +1,8 @@
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { APP_NAME } from '../config'
 import { getScene } from '../data/scenes'
-import { getTake } from '../data/takes'
+import { getTake, getTakeUrl } from '../data/takes'
 import { Button } from '../components/Button'
 import './Dailies.css'
 
@@ -8,24 +10,52 @@ export function Dailies() {
   const { id } = useParams()
   const scene = getScene(id)
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const take = getTake(scene.id)
+  // La prise se rejoue depuis la mémoire — rien n'est envoyé nulle part.
+  const videoUrl = getTakeUrl(scene.id)
+  const [shareFallback, setShareFallback] = useState(false)
 
   const downloadTake = () => {
-    if (!take) return
-    const url = URL.createObjectURL(take.blob)
+    if (!take || !videoUrl) return
     const link = document.createElement('a')
-    link.href = url
+    link.href = videoUrl
     link.download = `prise-${scene.id}.${take.extension}`
     link.click()
-    setTimeout(() => URL.revokeObjectURL(url), 1000)
+  }
+
+  // Partage natif (feuille de partage iPhone) ; sinon : téléchargement + explication.
+  const shareTake = async () => {
+    if (!take) return
+    const file = new File([take.blob], `prise-${scene.id}.${take.extension}`, {
+      type: take.blob.type,
+    })
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: APP_NAME })
+      } catch {
+        // partage annulé par l'utilisateur : rien à faire
+      }
+    } else {
+      downloadTake()
+      setShareFallback(true)
+    }
+  }
+
+  const anotherTake = () => {
+    navigate({ pathname: `/plateau/${scene.id}`, search: searchParams.toString() })
   }
 
   return (
     <div className="dailies">
-      <div className="dailies__screen" aria-hidden="true">
-        <span className="dailies__play">▶</span>
-        <p>Ta prise se rejouera ici</p>
-      </div>
+      {videoUrl ? (
+        <video className="dailies__video" src={videoUrl} controls playsInline />
+      ) : (
+        <div className="dailies__screen" aria-hidden="true">
+          <span className="dailies__play">▶</span>
+          <p>Ta prise se rejouera ici</p>
+        </div>
+      )}
 
       <header className="dailies__top">
         <h2>Tes dailies</h2>
@@ -41,13 +71,19 @@ export function Dailies() {
           <Button disabled>Pas encore de prise</Button>
         )}
         <div className="dailies__secondary">
-          <Button variant="ghost" onClick={() => navigate(`/plateau/${scene.id}`)}>
+          <Button variant="ghost" onClick={anotherTake}>
             Une autre ?
           </Button>
-          <Button variant="ghost" onClick={() => alert('Bientôt : partage direct.')}>
+          <Button variant="ghost" onClick={shareTake} disabled={!take}>
             Partager
           </Button>
         </div>
+        {shareFallback && (
+          <p className="dailies__hint">
+            Pas de partage direct sur ce navigateur : ta vidéo est téléchargée, envoie-la depuis tes
+            fichiers.
+          </p>
+        )}
         <Link to="/" className="dailies__back">
           ← Bibliothèque
         </Link>

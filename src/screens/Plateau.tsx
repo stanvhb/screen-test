@@ -56,6 +56,7 @@ export function Plateau() {
   const [countdownStep, setCountdownStep] = useState<string | null>(null)
   const [elapsedS, setElapsedS] = useState(0)
   const [recordError, setRecordError] = useState(false)
+  const [interrupted, setInterrupted] = useState(false)
   const [syncView, setSyncView] = useState<SyncView | null>(null)
 
   useEffect(() => {
@@ -143,7 +144,7 @@ export function Plateau() {
         }
       }
       setTake({ sceneId: scene.id, blob, extension: format.extension })
-      navigate(`/dailies/${scene.id}`)
+      navigate({ pathname: `/dailies/${scene.id}`, search: searchParams.toString() })
     }
     recorder.start()
     recorderRef.current = recorder
@@ -158,7 +159,7 @@ export function Plateau() {
       ref.muted = false
       ref.play().catch(() => {})
     }
-  }, [navigate, scene.id, stream, setPhase, setRecordError, setElapsedS])
+  }, [navigate, scene.id, stream, searchParams, setPhase, setRecordError, setElapsedS])
 
   // Décompte 3-2-1 → ACTION (la première étape est posée au clic sur Moteur)
   useEffect(() => {
@@ -224,6 +225,27 @@ export function Plateau() {
     return () => clearTimeout(timeout)
   }, [phase, finishRecording])
 
+  // Onglet masqué pendant la prise = enregistrement mort (le canvas ne se
+  // dessine plus). On annule proprement et on prévient, plutôt que de
+  // laisser croire que la prise continue.
+  useEffect(() => {
+    if (phase !== 'recording' && phase !== 'endcard') return
+    const onVisibilityChange = () => {
+      if (!document.hidden) return
+      const recorder = recorderRef.current
+      if (recorder && recorder.state !== 'inactive') {
+        recorder.ondataavailable = null
+        recorder.onstop = null
+        recorder.stop()
+      }
+      refVideoRef.current?.pause()
+      setInterrupted(true)
+      setPhase('preview')
+    }
+    document.addEventListener('visibilitychange', onVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', onVisibilityChange)
+  }, [phase, setPhase, setInterrupted])
+
   // On arrête proprement même si on quitte l'écran
   useEffect(() => {
     return () => {
@@ -281,6 +303,7 @@ export function Plateau() {
     : (activeLine?.isYou ?? true)
 
   const onMoteur = () => {
+    setInterrupted(false)
     // Tout ce qui exige un geste utilisateur s'amorce ici (autoplay + WebAudio Safari)
     if (!audioMixRef.current) {
       audioMixRef.current = new AudioMix()
@@ -349,6 +372,11 @@ export function Plateau() {
         </div>
         {recordError && (
           <p className="plateau__record-error">Ta vidéo n’a pas pu démarrer. Réessaie.</p>
+        )}
+        {interrupted && (
+          <p className="plateau__record-error">
+            Onglet quitté pendant la prise : elle est perdue. Moteur pour la refaire ?
+          </p>
         )}
         {isRecording ? (
           <button

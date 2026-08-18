@@ -18,6 +18,21 @@ export type KaraokeLine = { text: string; speaker: string; isYou: boolean }
 
 export const mockScenes: MockScene[] = [
   {
+    // Scène réelle (S3) : ses cues/shots/vidéo vivent dans public/scenes/demo/
+    id: 'demo',
+    title: 'La scène témoin',
+    film: 'Mire de test (générée)',
+    durationS: 20,
+    characters: [
+      { id: 'a', name: 'Perso A' },
+      { id: 'b', name: 'Perso B' },
+    ],
+    cues: [
+      { text: 'Réplique 1 — Perso A parle.', character: 'a' },
+      { text: 'Réplique 2 — Perso B parle.', character: 'b' },
+    ],
+  },
+  {
     id: 'cuisine',
     title: 'La dégustation',
     film: 'Film culte n° 1',

@@ -23,6 +23,20 @@
   transform: scaleX(-1);
 }
 
+/* Vidéo de référence : plein cadre quand l'autre personnage est à l'image */
+.plateau__ref {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Champ/contrechamp : la source hors plan reste montée, juste invisible */
+.plateau__offstage {
+  visibility: hidden;
+}
+
 .plateau__waiting {
   color: var(--ink-50);
   font-family: var(--font-mono);

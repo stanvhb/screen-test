@@ -25,10 +25,46 @@
   color: var(--ink-50);
 }
 
+.setup__section {
+  margin-top: var(--space-6);
+  font-size: 1rem;
+}
+
+.setup__roles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.setup__role {
+  min-height: var(--touch-min);
+  padding: var(--space-3);
+  background: var(--surface);
+  border: 1px solid transparent;
+  border-radius: var(--radius-card);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+.setup__role--selected {
+  border-color: var(--rec);
+}
+
+.setup__note {
+  margin: var(--space-3) 0 0;
+  color: var(--ink-50);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
 .setup__modes {
   display: grid;
   gap: var(--space-3);
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
 }
 
 .setup__mode {

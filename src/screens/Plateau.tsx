@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
-import { getScene } from '../data/scenes'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { getCharacter, getScene, karaokeLines, otherCharacter } from '../data/scenes'
 import { setTake } from '../data/takes'
 import { KaraokeBar } from '../components/KaraokeBar'
 import { Button } from '../components/Button'
@@ -17,6 +17,12 @@ const COUNTDOWN_STEP_MS = 800
 export function Plateau() {
   const { id } = useParams()
   const scene = getScene(id)
+  const [searchParams] = useSearchParams()
+  const roleId = searchParams.get('role')
+  const you = getCharacter(scene, roleId)
+  const other = otherCharacter(scene, roleId)
+  const lines = karaokeLines(scene, roleId)
+  const youOnScreen = lines.active.isYou
   const navigate = useNavigate()
   const { status, stream, request } = useCamera()
 
@@ -140,6 +146,11 @@ export function Plateau() {
         <span className="plateau__timecode">{formatTimecode(elapsedS)}</span>
       </header>
 
+      {/* Mock du champ/contrechamp : suit la réplique active en attendant shots.json (S3) */}
+      <p className={`plateau__shot ${youOnScreen ? 'plateau__shot--you' : ''}`}>
+        À l’image : {youOnScreen ? `toi (${you.name})` : other.name}
+      </p>
+
       {countdownStep && (
         <div className="plateau__countdown" aria-live="assertive">
           <span key={countdownStep}>{countdownStep}</span>
@@ -147,7 +158,7 @@ export function Plateau() {
       )}
 
       <footer className="plateau__bottom">
-        <KaraokeBar activeCue={scene.activeCue} nextCue={scene.nextCue} />
+        <KaraokeBar active={lines.active} next={lines.next} />
         {recordError && (
           <p className="plateau__record-error">Ta vidéo n’a pas pu démarrer. Réessaie.</p>
         )}

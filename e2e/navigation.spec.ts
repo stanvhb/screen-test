@@ -5,9 +5,9 @@ test('on navigue Bibliothèque → Setup → Plateau → Dailies', async ({ page
   await mockCamera(page)
   await page.goto('/')
 
-  // Bibliothèque → Setup
-  await page.getByRole('link', { name: /La dégustation/ }).click()
-  await expect(page.getByRole('heading', { name: 'La dégustation' })).toBeVisible()
+  // Bibliothèque (manifest) → Setup
+  await page.getByRole('link', { name: /La scène témoin/ }).click()
+  await expect(page.getByRole('heading', { name: 'La scène témoin' })).toBeVisible()
 
   // Setup → Plateau
   await page.getByRole('button', { name: 'Moteur…' }).click()

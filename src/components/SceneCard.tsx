@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
-import type { MockScene } from '../data/scenes'
+import type { SceneSummary } from '../hooks/useLibrary'
 import './SceneCard.css'
 
-export function SceneCard({ scene, index }: { scene: MockScene; index: number }) {
+export function SceneCard({ scene, index }: { scene: SceneSummary; index: number }) {
   return (
     <Link to={`/setup/${scene.id}`} className="scene-card">
       <div className="scene-card__thumb" aria-hidden="true">

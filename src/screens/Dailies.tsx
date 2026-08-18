@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { APP_NAME } from '../config'
 import { getScene } from '../data/scenes'
+import { useSceneData } from '../hooks/useSceneData'
 import { getTake, getTakeUrl } from '../data/takes'
 import { Button } from '../components/Button'
 import './Dailies.css'
@@ -9,25 +10,29 @@ import './Dailies.css'
 export function Dailies() {
   const { id } = useParams()
   const scene = getScene(id)
+  // id de la route : ne jamais retomber sur l'id du mock pour une scène inconnue des mocks
+  const sceneId = id ?? scene.id
+  const sceneData = useSceneData(sceneId)
+  const media = sceneData.status === 'ready' ? sceneData.media : null
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const take = getTake(scene.id)
+  const take = getTake(sceneId)
   // La prise se rejoue depuis la mémoire — rien n'est envoyé nulle part.
-  const videoUrl = getTakeUrl(scene.id)
+  const videoUrl = getTakeUrl(sceneId)
   const [shareFallback, setShareFallback] = useState(false)
 
   const downloadTake = () => {
     if (!take || !videoUrl) return
     const link = document.createElement('a')
     link.href = videoUrl
-    link.download = `prise-${scene.id}.${take.extension}`
+    link.download = `prise-${sceneId}.${take.extension}`
     link.click()
   }
 
   // Partage natif (feuille de partage iPhone) ; sinon : téléchargement + explication.
   const shareTake = async () => {
     if (!take) return
-    const file = new File([take.blob], `prise-${scene.id}.${take.extension}`, {
+    const file = new File([take.blob], `prise-${sceneId}.${take.extension}`, {
       type: take.blob.type,
     })
     if (navigator.canShare?.({ files: [file] })) {
@@ -43,7 +48,7 @@ export function Dailies() {
   }
 
   const anotherTake = () => {
-    navigate({ pathname: `/plateau/${scene.id}`, search: searchParams.toString() })
+    navigate({ pathname: `/plateau/${sceneId}`, search: searchParams.toString() })
   }
 
   return (
@@ -60,7 +65,7 @@ export function Dailies() {
       <header className="dailies__top">
         <h2>Tes dailies</h2>
         <p className="dailies__meta">
-          {scene.title} · d’après {scene.film}
+          {media?.title ?? scene.title} · d’après {media?.film ?? scene.film}
         </p>
       </header>
 

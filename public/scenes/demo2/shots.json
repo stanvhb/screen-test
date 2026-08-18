@@ -1,0 +1,32 @@
+[
+  {
+    "character": "a",
+    "startMs": 0,
+    "endMs": 2000
+  },
+  {
+    "character": "b",
+    "startMs": 2000,
+    "endMs": 4000
+  },
+  {
+    "character": "a",
+    "startMs": 4000,
+    "endMs": 6000
+  },
+  {
+    "character": "b",
+    "startMs": 6000,
+    "endMs": 8000
+  },
+  {
+    "character": "a",
+    "startMs": 8000,
+    "endMs": 10000
+  },
+  {
+    "character": "b",
+    "startMs": 10000,
+    "endMs": 12000
+  }
+]

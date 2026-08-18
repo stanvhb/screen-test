@@ -1,23 +1,58 @@
-// Génère public/scenes/demo/ : une vidéo mire (perso A / perso B en alternance,
-// chrono incrusté) + cues.json / shots.json alignés dessus.
-// Usage : node tools/make-demo-scene.mjs
+// Génère public/scenes/<id>/ : une vidéo mire (perso A / perso B en alternance,
+// chrono incrusté) + meta/cues/shots alignés dessus.
+// Usage : node tools/make-demo-scene.mjs [demo|demo2]
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { chromium } from '@playwright/test'
 
-const root = join(dirname(fileURLToPath(import.meta.url)), '..')
-const outDir = join(root, 'public', 'scenes', 'demo')
-mkdirSync(outDir, { recursive: true })
+const SCENES = {
+  demo: {
+    title: 'La scène témoin',
+    film: 'Mire de test (générée)',
+    durationMs: 20_000,
+    segmentMs: 2_500,
+    colors: ['#5a2320', '#1f2a4a'],
+    // Plans écrits à la main : coupes de réaction (image ≠ parole)
+    shots: [
+      { character: 'a', startMs: 0, endMs: 2500 },
+      { character: 'b', startMs: 2500, endMs: 3600 },
+      { character: 'a', startMs: 3600, endMs: 5000 },
+      { character: 'a', startMs: 5000, endMs: 7500 },
+      { character: 'b', startMs: 7500, endMs: 10000 },
+      { character: 'b', startMs: 10000, endMs: 11300 },
+      { character: 'a', startMs: 11300, endMs: 12500 },
+      { character: 'b', startMs: 12500, endMs: 15000 },
+      { character: 'a', startMs: 15000, endMs: 17500 },
+      { character: 'b', startMs: 17500, endMs: 20000 },
+    ],
+  },
+  demo2: {
+    title: 'La contre-mire',
+    film: 'Mire de test n° 2 (générée)',
+    durationMs: 12_000,
+    segmentMs: 2_000,
+    colors: ['#1f3a24', '#3a1f38'],
+    shots: null, // plans = segments de parole
+  },
+}
 
-const DURATION_MS = 20_000
-const SEGMENT_MS = 2_500 // A puis B, en alternance
+const id = process.argv[2] ?? 'demo'
+const config = SCENES[id]
+if (!config) {
+  console.error(`Scène inconnue « ${id} » — choix : ${Object.keys(SCENES).join(', ')}`)
+  process.exit(1)
+}
+
+const root = join(dirname(fileURLToPath(import.meta.url)), '..')
+const outDir = join(root, 'public', 'scenes', id)
+mkdirSync(outDir, { recursive: true })
 
 const browser = await chromium.launch()
 const page = await browser.newPage()
 
 const { b64, mime } = await page.evaluate(
-  async ({ durationMs, segmentMs }) => {
+  async ({ durationMs, segmentMs, colors }) => {
     const canvas = document.createElement('canvas')
     canvas.width = 720
     canvas.height = 1280
@@ -42,7 +77,7 @@ const { b64, mime } = await page.evaluate(
         const t = performance.now() - start
         const segment = Math.floor(t / segmentMs)
         const isA = segment % 2 === 0
-        ctx.fillStyle = isA ? '#5a2320' : '#1f2a4a'
+        ctx.fillStyle = isA ? colors[0] : colors[1]
         ctx.fillRect(0, 0, canvas.width, canvas.height)
         ctx.fillStyle = '#f4f1ea'
         ctx.textAlign = 'center'
@@ -72,7 +107,7 @@ const { b64, mime } = await page.evaluate(
     }
     return { b64: btoa(binary), mime }
   },
-  { durationMs: DURATION_MS, segmentMs: SEGMENT_MS },
+  { durationMs: config.durationMs, segmentMs: config.segmentMs, colors: config.colors },
 )
 
 await browser.close()
@@ -90,37 +125,30 @@ const characters = [
   { id: 'b', name: 'Perso B' },
 ]
 
-const segments = Math.floor(DURATION_MS / SEGMENT_MS)
+const segments = Math.floor(config.durationMs / config.segmentMs)
 const cues = Array.from({ length: segments }, (_, i) => ({
   text: `Réplique ${i + 1} — ${i % 2 === 0 ? 'Perso A' : 'Perso B'} parle.`,
   character: i % 2 === 0 ? 'a' : 'b',
-  startMs: i * SEGMENT_MS,
-  endMs: (i + 1) * SEGMENT_MS - 200, // petit silence entre les répliques
+  startMs: i * config.segmentMs,
+  endMs: (i + 1) * config.segmentMs - 200, // petit silence entre les répliques
 }))
 
-// Les plans ne suivent PAS bêtement la parole : on y glisse des plans de
-// réaction (on voit un personnage pendant que l'autre parle), comme dans
-// un vrai découpage. Parole (cues) et image (shots) sont indépendantes.
-const shots = [
-  { character: 'a', startMs: 0, endMs: 2500 }, // A parle, A à l'image
-  { character: 'b', startMs: 2500, endMs: 3600 }, // B parle…
-  { character: 'a', startMs: 3600, endMs: 5000 }, // …mais on coupe sur la RÉACTION de A
-  { character: 'a', startMs: 5000, endMs: 7500 },
-  { character: 'b', startMs: 7500, endMs: 10000 },
-  { character: 'b', startMs: 10000, endMs: 11300 }, // A parle, on voit B écouter
-  { character: 'a', startMs: 11300, endMs: 12500 },
-  { character: 'b', startMs: 12500, endMs: 15000 },
-  { character: 'a', startMs: 15000, endMs: 17500 },
-  { character: 'b', startMs: 17500, endMs: 20000 },
-]
+const shots =
+  config.shots ??
+  Array.from({ length: segments }, (_, i) => ({
+    character: i % 2 === 0 ? 'a' : 'b',
+    startMs: i * config.segmentMs,
+    endMs: (i + 1) * config.segmentMs,
+  }))
 
 writeFileSync(
   join(outDir, 'meta.json'),
   JSON.stringify(
     {
-      title: 'La scène témoin',
-      film: 'Mire de test (générée)',
+      title: config.title,
+      film: config.film,
       credits: 'Générée par tools/make-demo-scene.mjs',
+      durationS: Math.round(config.durationMs / 1000),
       characters,
     },
     null,
@@ -130,4 +158,4 @@ writeFileSync(
 writeFileSync(join(outDir, 'cues.json'), JSON.stringify(cues, null, 2))
 writeFileSync(join(outDir, 'shots.json'), JSON.stringify(shots, null, 2))
 
-console.log(`OK — ${outDir} (video.mp4 ${mime}, ${segments} cues/shots)`)
+console.log(`OK — ${outDir} (video.mp4 ${mime}, ${cues.length} cues, ${shots.length} shots)`)

@@ -1,8 +1,8 @@
 {
-  "title": "La scène témoin",
-  "film": "Mire de test (générée)",
+  "title": "La contre-mire",
+  "film": "Mire de test n° 2 (générée)",
   "credits": "Générée par tools/make-demo-scene.mjs",
-  "durationS": 20,
+  "durationS": 12,
   "characters": [
     {
       "id": "a",

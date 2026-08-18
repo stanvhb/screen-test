@@ -1,9 +1,11 @@
 import { APP_NAME } from '../config'
-import { mockScenes } from '../data/scenes'
+import { useLibrary } from '../hooks/useLibrary'
 import { SceneCard } from '../components/SceneCard'
 import './Library.css'
 
 export function Library() {
+  const library = useLibrary()
+
   return (
     <div className="library">
       <header className="library__header">
@@ -11,7 +13,7 @@ export function Library() {
         <p className="library__tagline">Rejoue la scène. Garde la prise.</p>
       </header>
       <div className="library__grid">
-        {mockScenes.map((scene, index) => (
+        {library.scenes.map((scene, index) => (
           <SceneCard key={scene.id} scene={scene} index={index} />
         ))}
       </div>

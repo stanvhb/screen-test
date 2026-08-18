@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import fixWebmDuration from 'fix-webm-duration'
 import { getScene, karaokeLines, type KaraokeLine } from '../data/scenes'
@@ -31,7 +31,9 @@ type SyncView = { active: Cue | null; next: Cue | null; shot: Shot | null }
 export function Plateau() {
   const { id } = useParams()
   const scene = getScene(id)
-  const sceneData = useSceneData(scene.id)
+  // id de la route : ne jamais retomber sur l'id du mock pour une scène inconnue des mocks
+  const sceneId = id ?? scene.id
+  const sceneData = useSceneData(sceneId)
   const media = sceneData.status === 'ready' ? sceneData.media : null
   const [searchParams] = useSearchParams()
   const roleId = searchParams.get('role')
@@ -63,16 +65,19 @@ export function Plateau() {
     phaseRef.current = phase
   }, [phase])
 
-  const compositorScene: CompositorScene | null = useMemo(() => {
-    if (!media) return null
-    return {
-      cues: media.cues,
-      shots: media.shots,
-      youId: you.id,
-      speakerName: (characterId) => media.characters.find((c) => c.id === characterId)?.name ?? '',
-      filmCredit: `d’après ${scene.film}`,
-    }
-  }, [media, you.id, scene.film])
+  const compositorScene: CompositorScene | null = media
+    ? {
+        cues: media.cues,
+        shots: media.shots,
+        youId: you.id,
+        speakerName: (characterId) =>
+          media.characters.find((c) => c.id === characterId)?.name ?? '',
+        filmCredit: `d’après ${media.film}`,
+      }
+    : null
+  // « Latest refs » : la boucle de rendu et les effets à minuterie lisent
+  // toujours la dernière version sans re-créer leurs abonnements.
+  const compositorSceneRef = useRef(compositorScene)
 
   // Aperçu caméra : le flux alimente une <video> cachée, dessinée sur le canvas
   useEffect(() => {
@@ -98,7 +103,7 @@ export function Plateau() {
       drawFrame(
         ctx,
         { cam: videoRef.current, ref: refVideoRef.current },
-        compositorScene,
+        compositorSceneRef.current,
         tMs,
         framePhase,
       )
@@ -106,14 +111,14 @@ export function Plateau() {
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [compositorScene])
-
-  const finishRecording = useCallback(() => {
-    refVideoRef.current?.pause()
-    recorderRef.current?.stop()
   }, [])
 
-  const startRecording = useCallback(() => {
+  const finishRecording = () => {
+    refVideoRef.current?.pause()
+    recorderRef.current?.stop()
+  }
+
+  const startRecording = () => {
     const format = pickRecordingFormat()
     const canvas = canvasRef.current
     if (!format || !stream || !canvas) {
@@ -143,8 +148,8 @@ export function Plateau() {
           // en-tête irréparable : on garde le blob brut
         }
       }
-      setTake({ sceneId: scene.id, blob, extension: format.extension })
-      navigate({ pathname: `/dailies/${scene.id}`, search: searchParams.toString() })
+      setTake({ sceneId, blob, extension: format.extension })
+      navigate({ pathname: `/dailies/${sceneId}`, search: searchParams.toString() })
     }
     recorder.start()
     recorderRef.current = recorder
@@ -159,7 +164,13 @@ export function Plateau() {
       ref.muted = false
       ref.play().catch(() => {})
     }
-  }, [navigate, scene.id, stream, searchParams, setPhase, setRecordError, setElapsedS])
+  }
+
+  const callbacksRef = useRef({ startRecording, finishRecording })
+  useEffect(() => {
+    compositorSceneRef.current = compositorScene
+    callbacksRef.current = { startRecording, finishRecording }
+  })
 
   // Décompte 3-2-1 → ACTION (la première étape est posée au clic sur Moteur)
   useEffect(() => {
@@ -169,14 +180,14 @@ export function Plateau() {
       step += 1
       if (step < COUNTDOWN_STEPS.length) {
         setCountdownStep(COUNTDOWN_STEPS[step])
-        if (COUNTDOWN_STEPS[step] === 'ACTION') startRecording()
+        if (COUNTDOWN_STEPS[step] === 'ACTION') callbacksRef.current.startRecording()
       } else {
         setCountdownStep(null)
         clearInterval(interval)
       }
     }, COUNTDOWN_STEP_MS)
     return () => clearInterval(interval)
-  }, [phase, startRecording])
+  }, [phase])
 
   // Timecode pendant la prise
   useEffect(() => {
@@ -221,9 +232,9 @@ export function Plateau() {
 
   useEffect(() => {
     if (phase !== 'endcard') return
-    const timeout = setTimeout(finishRecording, END_CARD_MS)
+    const timeout = setTimeout(() => callbacksRef.current.finishRecording(), END_CARD_MS)
     return () => clearTimeout(timeout)
-  }, [phase, finishRecording])
+  }, [phase])
 
   // Onglet masqué pendant la prise = enregistrement mort (le canvas ne se
   // dessine plus). On annule proprement et on prévient, plutôt que de
@@ -270,7 +281,7 @@ export function Plateau() {
               : 'Impossible de trouver ta caméra. Vérifie qu’aucune autre app ne l’utilise, puis réessaie.'}
           </p>
           <Button onClick={request}>Réessayer</Button>
-          <Link to={`/setup/${scene.id}`} className="plateau__back">
+          <Link to={`/setup/${sceneId}`} className="plateau__back">
             ← Retour
           </Link>
         </div>

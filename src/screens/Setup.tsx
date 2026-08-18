@@ -1,14 +1,22 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { getScene } from '../data/scenes'
+import { useSceneData } from '../hooks/useSceneData'
 import { Button } from '../components/Button'
 import './Setup.css'
 
 export function Setup() {
   const { id } = useParams()
   const scene = getScene(id)
+  const sceneData = useSceneData(id ?? scene.id)
+  const media = sceneData.status === 'ready' ? sceneData.media : null
   const navigate = useNavigate()
-  const [roleId, setRoleId] = useState(scene.characters[0].id)
+  // Vraies métadonnées quand la scène a son dossier, mock sinon
+  const title = media?.title ?? scene.title
+  const film = media?.film ?? scene.film
+  const characters = media?.characters ?? scene.characters
+  const [roleId, setRoleId] = useState<string | null>(null)
+  const selectedRole = characters.find((c) => c.id === roleId)?.id ?? characters[0].id
   const [mode, setMode] = useState<'playback' | 'solo'>('playback')
 
   return (
@@ -16,16 +24,16 @@ export function Setup() {
       <Link to="/" className="setup__back">
         ← Bibliothèque
       </Link>
-      <h2 className="setup__title">{scene.title}</h2>
-      <p className="setup__film">d’après {scene.film}</p>
+      <h2 className="setup__title">{title}</h2>
+      <p className="setup__film">d’après {film}</p>
 
       <h3 className="setup__section">Tu joues qui ?</h3>
       <div className="setup__roles">
-        {scene.characters.map((character) => (
+        {characters.map((character) => (
           <button
             key={character.id}
             type="button"
-            className={`setup__role ${roleId === character.id ? 'setup__role--selected' : ''}`}
+            className={`setup__role ${selectedRole === character.id ? 'setup__role--selected' : ''}`}
             onClick={() => setRoleId(character.id)}
           >
             {character.name}
@@ -57,7 +65,9 @@ export function Setup() {
       </div>
 
       <p className="setup__hint">On te demandera ta caméra au moment de tourner.</p>
-      <Button onClick={() => navigate(`/plateau/${scene.id}?role=${roleId}&mode=${mode}`)}>
+      <Button
+        onClick={() => navigate(`/plateau/${id ?? scene.id}?role=${selectedRole}&mode=${mode}`)}
+      >
         Moteur…
       </Button>
     </div>

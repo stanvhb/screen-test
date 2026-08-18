@@ -12,6 +12,10 @@ npm run check      # lint + typecheck + tests + build — LA commande de vérit�
 npm run test:e2e   # smoke Playwright (chromium + webkit)
 ```
 
+## Mise en ligne (Vercel)
+
+Une seule fois : sur [vercel.com/new](https://vercel.com/new), importer le dépôt GitHub `stanvhb/screen-test` (bouton « Import »), nom de projet `screen-test`, réglages par défaut (Vite est détecté). Ensuite tout est automatique : chaque branche poussée a son URL de prévisualisation https, et `main` = la production.
+
 ## Relecture d'un export
 
 Après une prise, vérifier objectivement le fichier téléchargé (durée, piste audio, 9:16, cadence) :

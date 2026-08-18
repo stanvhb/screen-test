@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { APP_NAME } from '../config'
 import { getScene } from '../data/scenes'
 import { getTake, getTakeUrl } from '../data/takes'
 import { Button } from '../components/Button'
@@ -12,6 +14,7 @@ export function Dailies() {
   const take = getTake(scene.id)
   // La prise se rejoue depuis la mémoire — rien n'est envoyé nulle part.
   const videoUrl = getTakeUrl(scene.id)
+  const [shareFallback, setShareFallback] = useState(false)
 
   const downloadTake = () => {
     if (!take || !videoUrl) return
@@ -19,6 +22,24 @@ export function Dailies() {
     link.href = videoUrl
     link.download = `prise-${scene.id}.${take.extension}`
     link.click()
+  }
+
+  // Partage natif (feuille de partage iPhone) ; sinon : téléchargement + explication.
+  const shareTake = async () => {
+    if (!take) return
+    const file = new File([take.blob], `prise-${scene.id}.${take.extension}`, {
+      type: take.blob.type,
+    })
+    if (navigator.canShare?.({ files: [file] })) {
+      try {
+        await navigator.share({ files: [file], title: APP_NAME })
+      } catch {
+        // partage annulé par l'utilisateur : rien à faire
+      }
+    } else {
+      downloadTake()
+      setShareFallback(true)
+    }
   }
 
   const anotherTake = () => {
@@ -53,10 +74,16 @@ export function Dailies() {
           <Button variant="ghost" onClick={anotherTake}>
             Une autre ?
           </Button>
-          <Button variant="ghost" onClick={() => alert('Bientôt : partage direct.')}>
+          <Button variant="ghost" onClick={shareTake} disabled={!take}>
             Partager
           </Button>
         </div>
+        {shareFallback && (
+          <p className="dailies__hint">
+            Pas de partage direct sur ce navigateur : ta vidéo est téléchargée, envoie-la depuis tes
+            fichiers.
+          </p>
+        )}
         <Link to="/" className="dailies__back">
           ← Bibliothèque
         </Link>

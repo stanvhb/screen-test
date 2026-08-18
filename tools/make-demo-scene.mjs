@@ -59,7 +59,28 @@ const { b64, mime } = await page.evaluate(
     const ctx = canvas.getContext('2d')
     const stream = canvas.captureStream(30)
 
-    const candidates = ['video/mp4;codecs=avc1.42E01E', 'video/mp4', 'video/webm;codecs=vp8']
+    // Piste audio : bips pendant les « répliques » (A grave, B aigu) pour que
+    // l'analyse automatique (détection de parole) ait de la matière.
+    const audioCtx = new AudioContext()
+    await audioCtx.resume()
+    const dest = audioCtx.createMediaStreamDestination()
+    const osc = audioCtx.createOscillator()
+    const gain = audioCtx.createGain()
+    gain.gain.value = 0
+    osc.connect(gain)
+    gain.connect(dest)
+    osc.start()
+    const segCount = Math.floor(durationMs / segmentMs)
+    for (let i = 0; i < segCount; i++) {
+      const t0 = audioCtx.currentTime + (i * segmentMs) / 1000
+      const t1 = audioCtx.currentTime + ((i + 1) * segmentMs - 400) / 1000
+      osc.frequency.setValueAtTime(i % 2 === 0 ? 440 : 660, t0)
+      gain.gain.setValueAtTime(0.4, t0)
+      gain.gain.setValueAtTime(0, t1)
+    }
+    stream.addTrack(dest.stream.getAudioTracks()[0])
+
+    const candidates = ['video/mp4;codecs=avc1.42E01E,mp4a.40.2', 'video/mp4', 'video/webm']
     const mime = candidates.find((c) => MediaRecorder.isTypeSupported(c))
     if (!mime) throw new Error('aucun format MediaRecorder supporté')
 
@@ -130,7 +151,7 @@ const cues = Array.from({ length: segments }, (_, i) => ({
   text: `Réplique ${i + 1} — ${i % 2 === 0 ? 'Perso A' : 'Perso B'} parle.`,
   character: i % 2 === 0 ? 'a' : 'b',
   startMs: i * config.segmentMs,
-  endMs: (i + 1) * config.segmentMs - 200, // petit silence entre les répliques
+  endMs: (i + 1) * config.segmentMs - 400, // silence entre les répliques (détectable par l'analyse)
 }))
 
 const shots =

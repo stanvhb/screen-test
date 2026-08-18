@@ -14,6 +14,11 @@ test('la scène témoin défile : karaoké calé et champ/contrechamp', async ({
   const active = page.locator('.karaoke__active')
   await expect(active).toHaveText('Réplique 1 — Perso A parle.', { timeout: 10_000 })
 
+  // Le prompteur balaye mot à mot : des mots s'allument au fil de la réplique
+  await expect
+    .poll(async () => page.locator('.karaoke__word--lit').count(), { timeout: 5_000 })
+    .toBeGreaterThan(1)
+
   // La réf avance : réplique 2 (2,5 s) et plan de Perso B → contrechamp
   await expect(active).toHaveText('Réplique 2 — Perso B parle.', { timeout: 10_000 })
   await expect(page.getByText(/À l’image : Perso B/)).toBeVisible()

@@ -7,6 +7,11 @@
   {
     "character": "b",
     "startMs": 2500,
+    "endMs": 3600
+  },
+  {
+    "character": "a",
+    "startMs": 3600,
     "endMs": 5000
   },
   {
@@ -20,8 +25,13 @@
     "endMs": 10000
   },
   {
-    "character": "a",
+    "character": "b",
     "startMs": 10000,
+    "endMs": 11300
+  },
+  {
+    "character": "a",
+    "startMs": 11300,
     "endMs": 12500
   },
   {

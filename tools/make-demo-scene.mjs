@@ -97,11 +97,22 @@ const cues = Array.from({ length: segments }, (_, i) => ({
   startMs: i * SEGMENT_MS,
   endMs: (i + 1) * SEGMENT_MS - 200, // petit silence entre les répliques
 }))
-const shots = Array.from({ length: segments }, (_, i) => ({
-  character: i % 2 === 0 ? 'a' : 'b',
-  startMs: i * SEGMENT_MS,
-  endMs: (i + 1) * SEGMENT_MS,
-}))
+
+// Les plans ne suivent PAS bêtement la parole : on y glisse des plans de
+// réaction (on voit un personnage pendant que l'autre parle), comme dans
+// un vrai découpage. Parole (cues) et image (shots) sont indépendantes.
+const shots = [
+  { character: 'a', startMs: 0, endMs: 2500 }, // A parle, A à l'image
+  { character: 'b', startMs: 2500, endMs: 3600 }, // B parle…
+  { character: 'a', startMs: 3600, endMs: 5000 }, // …mais on coupe sur la RÉACTION de A
+  { character: 'a', startMs: 5000, endMs: 7500 },
+  { character: 'b', startMs: 7500, endMs: 10000 },
+  { character: 'b', startMs: 10000, endMs: 11300 }, // A parle, on voit B écouter
+  { character: 'a', startMs: 11300, endMs: 12500 },
+  { character: 'b', startMs: 12500, endMs: 15000 },
+  { character: 'a', startMs: 15000, endMs: 17500 },
+  { character: 'b', startMs: 17500, endMs: 20000 },
+]
 
 writeFileSync(
   join(outDir, 'meta.json'),

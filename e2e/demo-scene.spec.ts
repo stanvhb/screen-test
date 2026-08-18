@@ -18,6 +18,11 @@ test('la scène témoin défile : karaoké calé et champ/contrechamp', async ({
   await expect(active).toHaveText('Réplique 2 — Perso B parle.', { timeout: 10_000 })
   await expect(page.getByText(/À l’image : Perso B/)).toBeVisible()
 
+  // Plan de réaction (3,6 s) : B parle TOUJOURS, mais l'image coupe sur toi.
+  // Parole (cues) et image (shots) sont bien deux pistes indépendantes.
+  await expect(page.getByText(/À l’image : toi \(Perso A\)/)).toBeVisible({ timeout: 5_000 })
+  await expect(active).toHaveText('Réplique 2 — Perso B parle.')
+
   // Coupez → Dailies avec la prise
   await page.getByRole('button', { name: 'Coupez' }).click()
   await expect(page.getByRole('heading', { name: 'Tes dailies' })).toBeVisible()

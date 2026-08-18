@@ -9,6 +9,7 @@ export function Setup() {
   const scene = getScene(id)
   const navigate = useNavigate()
   const [roleId, setRoleId] = useState(scene.characters[0].id)
+  const [mode, setMode] = useState<'playback' | 'solo'>('playback')
 
   return (
     <div className="setup">
@@ -37,19 +38,28 @@ export function Setup() {
       </p>
 
       <div className="setup__modes">
-        {/* Choix statique — le vrai réglage audio arrive avec la capture (S4) */}
-        <div className="setup__mode setup__mode--selected">
+        <button
+          type="button"
+          className={`setup__mode ${mode === 'playback' ? 'setup__mode--selected' : ''}`}
+          onClick={() => setMode('playback')}
+        >
           <h3>Playback</h3>
           <p>La bande son joue, tu joues par-dessus.</p>
-        </div>
-        <div className="setup__mode">
+        </button>
+        <button
+          type="button"
+          className={`setup__mode ${mode === 'solo' ? 'setup__mode--selected' : ''}`}
+          onClick={() => setMode('solo')}
+        >
           <h3>Solo</h3>
           <p>Rien que ta voix, la réf en muet.</p>
-        </div>
+        </button>
       </div>
 
       <p className="setup__hint">On te demandera ta caméra au moment de tourner.</p>
-      <Button onClick={() => navigate(`/plateau/${scene.id}?role=${roleId}`)}>Moteur…</Button>
+      <Button onClick={() => navigate(`/plateau/${scene.id}?role=${roleId}&mode=${mode}`)}>
+        Moteur…
+      </Button>
     </div>
   )
 }

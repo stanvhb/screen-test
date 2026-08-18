@@ -23,8 +23,8 @@
   transform: scaleX(-1);
 }
 
-/* Vidéo de référence : plein cadre quand l'autre personnage est à l'image */
-.plateau__ref {
+/* Le canvas composité est l'écran : ce qu'on voit = ce qui s'exporte */
+.plateau__canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -32,12 +32,27 @@
   object-fit: cover;
 }
 
-/* Champ/contrechamp : la source hors plan reste montée, juste invisible */
-.plateau__offstage {
-  visibility: hidden;
+/* Sources vidéo : montées (Safari doit les décoder) mais hors de la vue */
+.plateau__source {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Copie DOM du karaoké pour lecteurs d'écran et tests (le visible est sur le canvas) */
+.plateau__karaoke-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .plateau__waiting {
+  position: relative;
   color: var(--ink-50);
   font-family: var(--font-mono);
   font-size: 0.8125rem;

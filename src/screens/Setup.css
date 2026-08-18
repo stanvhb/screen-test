@@ -72,6 +72,10 @@
   border: 1px solid transparent;
   border-radius: var(--radius-card);
   padding: var(--space-4);
+  text-align: left;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }
 
 .setup__mode--selected {

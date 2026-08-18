@@ -22,3 +22,26 @@ test('la scène témoin défile : karaoké calé et champ/contrechamp', async ({
   await page.getByRole('button', { name: 'Coupez' }).click()
   await expect(page.getByRole('heading', { name: 'Tes dailies' })).toBeVisible()
 })
+
+test('l’export composité se télécharge et pèse son poids', async ({ page }, testInfo) => {
+  await mockCamera(page)
+  await page.goto('/plateau/demo')
+
+  await page.getByRole('button', { name: 'Moteur' }).click()
+  const active = page.locator('.karaoke__active')
+  await expect(active).toHaveText('Réplique 2 — Perso B parle.', { timeout: 15_000 })
+  await page.getByRole('button', { name: 'Coupez' }).click()
+
+  const downloadPromise = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Télécharger ta prise' }).click()
+  const download = await downloadPromise
+  const filename = download.suggestedFilename()
+  expect(filename).toMatch(/^prise-demo\.(webm|mp4)$/)
+
+  // Copie inspectable par tools/verify-export.sh
+  const outPath = testInfo.outputPath(`export-sample-${filename}`)
+  await download.saveAs(outPath)
+  const { statSync } = await import('node:fs')
+  // Un export composité de quelques secondes ne peut pas être minuscule
+  expect(statSync(outPath).size).toBeGreaterThan(80_000)
+})
